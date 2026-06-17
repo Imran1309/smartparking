@@ -1,18 +1,19 @@
-import { processJob } from './workers';
+import { Queue } from 'bullmq';
+import { redisClient } from '../config/redis';
 
-// In-memory fallback to avoid requiring Redis locally for the demo
+// Create a new BullMQ queue using our Redis connection
+export const reservationQueue = new Queue('reservationQueue', {
+    connection: redisClient as any
+});
+
 export const addReservationJob = async (jobName: string, data: any, delay: number = 0) => {
-    console.log(`[Queue Mock] Job ${jobName} queued with delay ${delay}ms`);
+    console.log(`[Queue] Adding job ${jobName} to queue with delay ${delay}ms`);
     
-    // Simulate job execution via setTimeout
-    setTimeout(async () => {
-        try {
-            await processJob({ name: jobName, data });
-            console.log(`[Queue Mock] Job ${jobName} completed successfully`);
-        } catch (error) {
-            console.error(`[Queue Mock] Job ${jobName} failed:`, error);
-        }
-    }, delay);
+    const job = await reservationQueue.add(jobName, data, {
+        delay,
+        removeOnComplete: true, // Keep redis clean
+        removeOnFail: false
+    });
 
-    return { id: `job-${Date.now()}` };
+    return { id: job.id };
 };

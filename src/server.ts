@@ -6,6 +6,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware for request processing
+import { timingMiddleware } from './middleware/timing.middleware';
+app.use(timingMiddleware);
 app.use(express.json()); // Body parsing
 app.use(morgan('dev'));  // Logging
 

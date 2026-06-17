@@ -1,5 +1,7 @@
-// In-memory fallback to avoid requiring Redis locally for the demo
-export const processJob = async (job: { name: string, data: any }) => {
+import { Worker, Job } from 'bullmq';
+import { redisClient } from '../config/redis';
+
+const processJob = async (job: Job) => {
     switch(job.name) {
         case 'sendConfirmationEmail':
             console.log(`[Worker] Sending confirmation email for reservation ${job.data.reservationId} to ${job.data.email}`);
@@ -17,3 +19,16 @@ export const processJob = async (job: { name: string, data: any }) => {
             console.warn(`[Worker] Unknown job name: ${job.name}`);
     }
 };
+
+// Create the worker listening to the 'reservationQueue'
+export const reservationWorker = new Worker('reservationQueue', processJob, {
+    connection: redisClient as any
+});
+
+reservationWorker.on('completed', job => {
+    console.log(`[Worker] Job ${job.id} has completed!`);
+});
+
+reservationWorker.on('failed', (job, err) => {
+    console.error(`[Worker] Job ${job?.id} has failed with ${err.message}`);
+});
