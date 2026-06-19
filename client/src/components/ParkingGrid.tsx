@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { io } from 'socket.io-client';
+
 import api from '../api';
 import { Car } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
