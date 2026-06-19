@@ -18,18 +18,12 @@ export default function ParkingGrid() {
 
   useEffect(() => {
     fetchSlots();
+    // Socket.io removed for Vercel serverless compatibility
+    const interval = setInterval(() => {
+      fetchSlots();
+    }, 5000); // Poll every 5 seconds instead of websockets
 
-    const socketUrl = import.meta.env.VITE_API_URL 
-      ? import.meta.env.VITE_API_URL 
-      : (import.meta.env.PROD ? 'https://smartparking-x237.onrender.com' : 'http://localhost:3000');
-    const socket = io(socketUrl);
-    socket.on('slot_updated', (updatedSlot: Slot) => {
-      setSlots((prev) => prev.map((s) => (s.id === updatedSlot.id ? updatedSlot : s)));
-    });
-
-    return () => {
-      socket.disconnect();
-    };
+    return () => clearInterval(interval);
   }, []);
 
   const fetchSlots = async () => {

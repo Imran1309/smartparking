@@ -3,7 +3,7 @@ import axios from 'axios';
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL 
     ? `${import.meta.env.VITE_API_URL}/api` 
-    : (import.meta.env.PROD ? 'https://smartparking-x237.onrender.com/api' : 'http://localhost:3000/api')
+    : '/api'
 });
 
 api.interceptors.request.use((config) => {

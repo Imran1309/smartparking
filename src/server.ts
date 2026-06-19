@@ -40,10 +40,4 @@ app.use('/api/dashboard', dashboardRoutes);
 // Use error handler middleware
 app.use(errorHandler);
 
-if (!process.env.VERCEL) {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
-}
-
 export default app;
