@@ -19,7 +19,9 @@ export default function ParkingGrid() {
   useEffect(() => {
     fetchSlots();
 
-    const socketUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    const socketUrl = import.meta.env.VITE_API_URL 
+      ? import.meta.env.VITE_API_URL 
+      : (import.meta.env.PROD ? 'https://smartparking-x237.onrender.com' : 'http://localhost:3000');
     const socket = io(socketUrl);
     socket.on('slot_updated', (updatedSlot: Slot) => {
       setSlots((prev) => prev.map((s) => (s.id === updatedSlot.id ? updatedSlot : s)));
