@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import BookingResult from './pages/BookingResult';
 
 // Simple PrivateRoute wrapper
 const PrivateRoute = ({ children, role }: { children: React.ReactNode, role?: string }) => {
@@ -32,6 +33,11 @@ function App() {
         <Route path="/admin" element={
           <PrivateRoute role="ADMIN">
             <AdminDashboard />
+          </PrivateRoute>
+        } />
+        <Route path="/booking-result" element={
+          <PrivateRoute role="USER">
+            <BookingResult />
           </PrivateRoute>
         } />
         <Route path="/" element={<Navigate to="/login" />} />
