@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 import api from '../api';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const res = await api.post('/auth/login', { email, password });
       if (res.data.success) {
@@ -23,6 +27,8 @@ export default function Login() {
       }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,16 +51,25 @@ export default function Login() {
           </div>
           <div>
             <label className="block text-sm text-zinc-400 mb-1">Password</label>
-            <input 
-              type="password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-zinc-950/50 border border-zinc-800 rounded-lg p-3 text-zinc-100 focus:border-blue-500 focus:outline-none"
-              required 
-            />
+            <div className="relative">
+              <input 
+                type={showPassword ? "text" : "password"} 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-zinc-950/50 border border-zinc-800 rounded-lg p-3 text-zinc-100 focus:border-blue-500 focus:outline-none pr-10"
+                required 
+              />
+              <button 
+                type="button" 
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-300"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
-          <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-zinc-100 font-semibold py-3 rounded-lg transition-colors mt-6">
-            Sign In
+          <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-zinc-100 font-semibold py-3 rounded-lg transition-colors mt-6">
+            {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
         <p className="mt-4 text-center text-zinc-400">

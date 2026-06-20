@@ -57,7 +57,17 @@ export default function ParkingGrid() {
     }
   };
 
-  if (loading) return <div>Loading grid...</div>;
+  if (loading) return <div className="text-zinc-400">Loading grid...</div>;
+
+  if (slots.length === 0) {
+    return (
+      <div className="text-center p-8 border border-zinc-800 rounded-xl bg-zinc-950/50">
+        <Car size={48} className="mx-auto mb-4 text-zinc-500 opacity-50" />
+        <h3 className="text-xl font-semibold text-zinc-300">No Parking Slots Available</h3>
+        <p className="text-zinc-500 mt-2">The system currently has no parking slots configured. Please wait for an admin to add them.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
